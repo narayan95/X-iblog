@@ -1,31 +1,35 @@
-//alert("UPDATE: Now you can subscribe to X-iblog Newsletter for latest updates");
+// import { listid } from "./secrets.js";
+// import { apikey } from "./secrets.js";
 const express= require('express');
 const https=require('https');
-var bodyParser= require('body-parser');
+const bodyParser= require('body-parser');
 const request= require('request');
 //const { url } = require('inspector');
 const app= express();
-const port=3000;
+const port=5000;
+const apikey="7e117d6ae55e3f028cf5d59cac8641bd-us13";
+const listid="f1b16b7162";
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended:true}));
 // ..PORT= ;
 app.listen(process.env.PORT || port,()=>
-console.log("Server is running on port "+port)
+{
+console.log("Server is running on port "+port)}
 );
 app.get("/",(req,res)=>
 {
     res.sendFile(__dirname+"/index.html");
-})
-app.post("/newsletter",(req,res)=>
+});
+app.post("/",(req,res)=>
 {
-    // var firstName=req.body.fname;
-    // var lastName=req.body.lname;
-    var email=req.body.email;
-    var data={
+    // const firstName=req.body.fname;
+    // const lastName=req.body.lname;
+    const emailid=req.body.email;
+    const data={
          members:[
             {
-                email_address: email,
-                status: "subscribed",
+                email_address: emailid,
+                status: "subscribed"
                 // merge_fields:
                 // {
                 //     FNAME: firstName,
@@ -34,17 +38,18 @@ app.post("/newsletter",(req,res)=>
             }
          ]
     };
-    var jsonData= JSON.stringify(data);
-    const url= "https://us13.api.mailchimp.com/3.0/lists/f1b16b7162";
+    
+    const jsonData= JSON.stringify(data);
+    const url= "https://us13.api.mailchimp.com/3.0/lists/"+listid;
     const options={
         method:"POST",
-        auth:"sriansh:f58e1495f17de079940adb47351820eb-us13"
+        auth:"sriansh:"+ apikey
     }
      const request=https.request(url,options,function(response)
     {
         response.on("data",function(data)
         {
-            // console.log(response.statusCode);
+            console.log(response.statusCode);
             if(response.statusCode===200)
             res.sendFile(__dirname+"/success.html");
             else
